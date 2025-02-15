@@ -1,7 +1,7 @@
 import './App.css';
 import * as d3 from "d3";
 import { useState, useEffect } from "react";
-import LinePlot from './LinePlot';
+import LinePlot from './Componentes/graficos/Linhas/LinePlot';
 
 function App() {
   const comprasFiles = [
