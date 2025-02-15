@@ -131,7 +131,7 @@ export default function VerticalBarPlot({
   }, [data]);
 
   return (
-    <svg ref={svgRef} width={800} height={500}>
+    <svg ref={svgRef} width={width} height={height}>
       <g className="chart"></g>
     </svg>
   );
