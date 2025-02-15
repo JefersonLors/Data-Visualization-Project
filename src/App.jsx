@@ -1,10 +1,21 @@
 import * as d3 from 'd3';
 import React, { useEffect, useState } from 'react';
-import './App.css';
+
+import {
+  Card,
+  CardContainer,
+  ChartCardBarPlot,
+  ChartCardContainer,
+  ChartCardVerticalBarPlot,
+  DashboardContainer,
+  Header,
+  MainContent,
+  Title,
+  TitleQuestion,
+} from './styles';
 
 import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
 import LinePlot from './Componentes/graficos/Linhas/LinePlot';
-
 function App() {
   const comprasFiles = [
     'data/compras/Compra_2019_01.csv',
@@ -174,19 +185,47 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h2>Qual foi a evolução mensal do total bruto de compras e vendas?</h2>
-      <LinePlot
-        compras={comprasTotalBruto}
-        vendas={vendasTotalBruto}
-        valoresx={['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho']}
-      />
-      <h2>
-        Qual a distribuição do ICMS entre os diferentes estados nas compras e
-        vendas?
-      </h2>
-      <VerticalBarPlot data={estadosICMS} />
-    </>
+    <DashboardContainer>
+      <MainContent>
+        <Header>
+          <Title>Relatório de Notas Fiscais 2019.1</Title>
+        </Header>
+        <CardContainer>
+          <Card bgColor="#7593af">150 Orders</Card>
+          <Card bgColor="#7593af">53% Bounce Rate</Card>
+          <Card bgColor="#7593af">44 User Registrations</Card>
+          <Card bgColor="#7593af">65 Unique Visitors</Card>
+        </CardContainer>
+        <ChartCardContainer>
+          <ChartCardVerticalBarPlot gridRow="1 / 1" gridColumn="1 / 2">
+            <TitleQuestion>
+              Qual a distribuição do ICMS entre os diferentes estados nas
+              compras e vendas?
+            </TitleQuestion>
+            <VerticalBarPlot data={estadosICMS} height={300} width={450} />
+          </ChartCardVerticalBarPlot>
+          <ChartCardBarPlot gridRow="1 / 1" gridColumn="2 / 3">
+            <TitleQuestion>
+              Qual foi a evolução mensal do total bruto de compras e vendas?
+            </TitleQuestion>
+            <LinePlot
+              compras={comprasTotalBruto}
+              vendas={vendasTotalBruto}
+              valoresx={[
+                'Janeiro',
+                'Fevereiro',
+                'Março',
+                'Abril',
+                'Maio',
+                'Junho',
+              ]}
+              height={300}
+              width={500}
+            />
+          </ChartCardBarPlot>
+        </ChartCardContainer>
+      </MainContent>
+    </DashboardContainer>
   );
 }
 
