@@ -1,5 +1,15 @@
-import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import React, { useEffect, useRef } from 'react';
+
+VerticalBarPlot.propTypes = {
+  data: [],
+  width: 0,
+  height: 0,
+  marginTop: 0,
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+};
 
 export default function VerticalBarPlot({
   data,
@@ -8,13 +18,18 @@ export default function VerticalBarPlot({
   marginTop = 20,
   marginRight = 20,
   marginBottom = 30,
-  marginLeft = 110
+  marginLeft = 110,
 }) {
   const svgRef = useRef(null);
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    const margin = { top: marginTop, right: marginRight, bottom: marginBottom, left: marginLeft };
+    const margin = {
+      top: marginTop,
+      right: marginRight,
+      bottom: marginBottom,
+      left: marginLeft,
+    };
     const plotWidth = width - margin.left - margin.right;
     const plotHeight = height - margin.top - margin.bottom;
 
@@ -28,15 +43,22 @@ export default function VerticalBarPlot({
     // Criação das escalas
     const x = d3
       .scaleBand()
-      .domain(data.map(d => d.estado))
+      .domain(data.map((d) => d.estado))
       .range([0, plotWidth])
       .padding(0.1);
 
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => Math.max(d.icmsCompras, d.icmsVendas))]).nice().range([plotHeight, 0]);
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => Math.max(d.icmsCompras, d.icmsVendas))])
+      .nice()
+      .range([plotHeight, 0]);
 
     // Adiciona os eixos
-    const yAxis = d3.axisLeft(y).ticks(8).tickFormat(d => d3.format(".2s")(d).replace("G", "B"));
-    const xAxis = d3.axisBottom(x).tickFormat(d => d);
+    const yAxis = d3
+      .axisLeft(y)
+      .ticks(8)
+      .tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
+    const xAxis = d3.axisBottom(x).tickFormat((d) => d);
 
     g.append('g')
       .attr('class', 'y-axis')
@@ -56,10 +78,10 @@ export default function VerticalBarPlot({
       .enter()
       .append('rect')
       .attr('class', 'bar-compras')
-      .attr('x', d => x(d.estado))
-      .attr('y', d => y(d.icmsCompras))
+      .attr('x', (d) => x(d.estado))
+      .attr('y', (d) => y(d.icmsCompras))
       .attr('width', x.bandwidth() / 2)
-      .attr('height', d => plotHeight - y(d.icmsCompras))
+      .attr('height', (d) => plotHeight - y(d.icmsCompras))
       .attr('fill', 'blue');
 
     // Adiciona as barras de ICMS de vendas
@@ -68,10 +90,10 @@ export default function VerticalBarPlot({
       .enter()
       .append('rect')
       .attr('class', 'bar-vendas')
-      .attr('x', d => x(d.estado) + x.bandwidth() / 2)
-      .attr('y', d => y(d.icmsVendas))
+      .attr('x', (d) => x(d.estado) + x.bandwidth() / 2)
+      .attr('y', (d) => y(d.icmsVendas))
       .attr('width', x.bandwidth() / 2)
-      .attr('height', d => plotHeight - y(d.icmsVendas))
+      .attr('height', (d) => plotHeight - y(d.icmsVendas))
       .attr('fill', 'orange');
 
     // Legendas
@@ -106,7 +128,6 @@ export default function VerticalBarPlot({
       .attr('y', -340)
       .attr('font-size', 12)
       .text('Vendas');
-
   }, [data]);
 
   return (
@@ -114,5 +135,4 @@ export default function VerticalBarPlot({
       <g className="chart"></g>
     </svg>
   );
-};
-
+}

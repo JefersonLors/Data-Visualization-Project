@@ -1,8 +1,9 @@
 import * as d3 from 'd3';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import LinePlot from './LinePlot';
-import VerticalBarPlot from './VerticalBarPlot';
+
+import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
+import LinePlot from './Componentes/graficos/Linhas/LinePlot';
 
 function App() {
   const comprasFiles = [
@@ -28,10 +29,10 @@ function App() {
   const [vendasTotalBruto, setVendasTotalBruto] = useState([]);
   const [comprasIcms, setComprasIcms] = useState([]);
   const [vendasIcms, setVendasIcms] = useState([]);
-  const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
-  const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
-  const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
-  const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
+  // const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
+  // const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
+  // const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
+  // const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
 
   useEffect(() => {
