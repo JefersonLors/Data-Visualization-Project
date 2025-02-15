@@ -2,6 +2,7 @@ import './App.css';
 import * as d3 from "d3";
 import { useState, useEffect } from "react";
 import LinePlot from './LinePlot';
+import VerticalBarPlot from './VerticalBarPlot';
 
 function App() {
   const comprasFiles = [
@@ -21,6 +22,8 @@ function App() {
     'data/vendas/Venda_2019_05.csv',
     'data/vendas/Venda_2019_06.csv'
   ];
+  const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho"];
+
 
   const [comprasTotalBruto, setComprasTotalBruto] = useState([]);
   const [vendasTotalBruto, setVendasTotalBruto] = useState([]);
@@ -155,8 +158,8 @@ function App() {
     <>
       <h2>Qual foi a evolução mensal do total bruto de compras e vendas?</h2>
       <LinePlot compras={comprasTotalBruto} vendas={vendasTotalBruto} valoresx={["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho"]} />
-      <h3>Top Estados por ICMS Arrecadado</h3>
-      <pre>{JSON.stringify(estadosICMS, null, 2)}</pre>
+      <h2>Qual a distribuição do ICMS entre os diferentes estados nas compras e vendas?</h2>
+      <VerticalBarPlot data={estadosICMS} /> 
     </>
   );
 }
