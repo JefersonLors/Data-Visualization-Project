@@ -27,14 +27,14 @@ function App() {
   const [comprasTotalBruto, setComprasTotalBruto] = useState([]);
   const [vendasTotalBruto, setVendasTotalBruto] = useState([]);
 
-  const [comprasIcms, setComprasIcms] = useState([]);
-  const [vendasIcms, setVendasIcms] = useState([]);
+  // const [comprasIcms, setComprasIcms] = useState([]);
+  // const [vendasIcms, setVendasIcms] = useState([]);
 
-  const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
-  const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
+  // const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
+  // const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
 
-  const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
-  const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
+  // const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
+  // const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
 
   useEffect(() => {
     async function sumData(csvData, column) {
@@ -79,7 +79,7 @@ function App() {
       />
 
       {/* <h2>Qual a distribuição do ICMS entre os diferentes estados nas compras e vendas?</h2>
-  <BarPlot comprasEstadosOrigem={comprasEstadosOrigem} vendasEstadosDestino={vendasEstadosDestino} valoresx={meses} /> */}
+        <BarPlot comprasEstadosOrigem={comprasEstadosOrigem} vendasEstadosDestino={vendasEstadosDestino} valoresx={meses} /> */}
     </>
   );
 }

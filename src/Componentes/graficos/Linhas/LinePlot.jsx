@@ -1,5 +1,17 @@
 import * as d3 from 'd3';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+
+LinePlot.propTypes = {
+  compras: [],
+  vendas: [],
+  valoresx: '',
+  width: 0,
+  height: 0,
+  marginTop: 0,
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+};
 
 export default function LinePlot({
   compras,
