@@ -36,6 +36,10 @@ export default function VerticalBarPlot({
     // Limpeza do SVG antes de desenhar
     svg.selectAll('*').remove();
 
+    const gx = -115
+    const gy = -250
+    const gycolor = -258
+
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
@@ -100,32 +104,32 @@ export default function VerticalBarPlot({
     g.append('g')
       .attr('transform', `translate(0, ${plotHeight + 10})`)
       .append('rect')
-      .attr('x', -120)
-      .attr('y', -350)
+      .attr('x', gx)
+      .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
       .attr('fill', 'blue');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 10})`)
       .append('text')
-      .attr('x', -120)
-      .attr('y', -340)
+      .attr('x', gx)
+      .attr('y', gy)
       .attr('font-size', 12)
       .text('Compras');
 
     g.append('g')
       .attr('transform', `translate(0, ${plotHeight + 30})`)
       .append('rect')
-      .attr('x', -120)
-      .attr('y', -350)
+      .attr('x', gx)
+      .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
       .attr('fill', 'orange');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 30})`)
       .append('text')
-      .attr('x', -120)
-      .attr('y', -340)
+      .attr('x', gx)
+      .attr('y', gy)
       .attr('font-size', 12)
       .text('Vendas');
   }, [data]);
