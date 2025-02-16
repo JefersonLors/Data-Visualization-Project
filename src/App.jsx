@@ -7,6 +7,7 @@ import {
   ChartCardBarPlot,
   ChartCardContainer,
   ChartCardVerticalBarPlot,
+  ChartCardPizzaPlot,
   DashboardContainer,
   Header,
   MainContent,
@@ -16,6 +17,7 @@ import {
 
 import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
 import LinePlot from './Componentes/graficos/Linhas/LinePlot';
+import PizzaPlot from './Componentes/graficos/Pizza/PizzaPlot';
 function App() {
   const comprasFiles = [
     'data/compras/Compra_2019_01.csv',
@@ -40,6 +42,7 @@ function App() {
   const [vendasTotalBruto, setVendasTotalBruto] = useState([]);
   const [comprasIcms, setComprasIcms] = useState([]);
   const [vendasIcms, setVendasIcms] = useState([]);
+  const [cnaesFrequentes, setCnaesFrequentes] = useState([]);
   // const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
   // const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
   // const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
@@ -166,16 +169,88 @@ function App() {
               b.icmsCompras + b.icmsVendas - (a.icmsCompras + a.icmsVendas)
           );
 
-        // Limitar o número de estados, caso necessário
         const limit = 10; // Você pode passar esse valor para controlar o limite de estados
         const limitedEstados = sortedEstados.slice(0, limit);
 
-        // Atualizar estados e totais
+        
+        const allCompras = compraData.flat();
+        const totalCompras = allCompras.length;
+        const comprasCnaesCount = {};
+
+        allCompras.forEach(d => {
+          const cnae = d.cnae;
+          const descricao = d.descricao_cnae; // Supondo que a coluna existe
+          
+          if (cnae) {
+            if (!comprasCnaesCount[cnae]) {
+              comprasCnaesCount[cnae] = {
+                count: 0,
+                descricao: descricao || "Descrição não disponível",
+              };
+            }
+            comprasCnaesCount[cnae].count++;
+          }
+        });
+
+        const comprasCnaesArray = Object.entries(comprasCnaesCount)
+          .map(([cnae, dados]) => ({
+            cnae,
+            descricao: dados.descricao,
+            porcentagem: Number(((dados.count / totalCompras) * 100).toFixed(2))
+          }))
+          .sort((a, b) => b.porcentagem - a.porcentagem)
+          .slice(0, 5);
+
+        // Processar CNAEs frequentes para vendas
+        const allVendas = vendaData.flat();
+        const totalVendas = allVendas.length;
+        const vendasCnaesCount = {};
+
+        allVendas.forEach(d => {
+          const cnae = d.cnae;
+          const descricao = d.descricao_cnae;
+          
+          if (cnae) {
+            if (!vendasCnaesCount[cnae]) {
+              vendasCnaesCount[cnae] = {
+                count: 0,
+                descricao: descricao || "Descrição não disponível",
+              };
+            }
+            vendasCnaesCount[cnae].count++;
+          }
+        });
+
+        const vendasCnaesArray = Object.entries(vendasCnaesCount)
+          .map(([cnae, dados]) => ({
+            cnae,
+            descricao: dados.descricao,
+            porcentagem: Number(((dados.count / totalVendas) * 100).toFixed(2))
+          }))
+          .sort((a, b) => b.porcentagem - a.porcentagem)
+          .slice(0, 5);
+
+        
+        const cnaesArray = [...comprasCnaesArray, ...vendasCnaesArray];
+
+        // Calcula a soma das porcentagens dos top 5 CNAEs
+        const top5 = cnaesArray.slice(0, 5);
+        const somaTop5 = top5.reduce((acc, curr) => acc + curr.porcentagem, 0);
+        
+        // Calcula o restante da porcentagem (Outros)
+        const outros = {
+          cnae: null,
+          descricao: "Outros",
+          porcentagem: Number((100 - somaTop5).toFixed(2))
+        };
+
+        const cnaesFrequentes = [...top5, outros];
+
         setComprasTotalBruto(totaisBrutosCompras);
         setVendasTotalBruto(totaisBrutosVendas);
-        setComprasIcms(comprasICMSTotal);
-        setVendasIcms(vendasICMSTotal);
         setEstadosICMS(limitedEstados);
+        setCnaesFrequentes(cnaesFrequentes);
+
       } catch (error) {
         console.error('Erro ao carregar os arquivos CSV:', error);
       }
@@ -223,6 +298,12 @@ function App() {
               width={500}
             />
           </ChartCardBarPlot>
+          <ChartCardPizzaPlot gridRow="2 / 2" gridColumn="1/3">
+            <TitleQuestion>
+            Quais são os CNAEs mais comuns em compras e vendas no estado da Bahia?
+            </TitleQuestion>
+            <PizzaPlot data={cnaesFrequentes} height={300} width={1000} />
+          </ChartCardPizzaPlot>
         </ChartCardContainer>
       </MainContent>
     </DashboardContainer>
