@@ -5,6 +5,7 @@ import {
   Card,
   CardContainer,
   ChartCardBarPlot,
+  ChartCardLinePlot,
   ChartCardContainer,
   ChartCardVerticalBarPlot,
   ChartCardPizzaPlot,
@@ -16,8 +17,11 @@ import {
 } from './styles';
 
 import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
+import HorizontalBarPlot from './Componentes/graficos/BarrasHorizontais/HorizontalBarPlot';
 import LinePlot from './Componentes/graficos/Linhas/LinePlot';
 import PizzaPlot from './Componentes/graficos/Pizza/PizzaPlot';
+
+
 function App() {
   const comprasFiles = [
     'data/compras/Compra_2019_01.csv',
@@ -48,6 +52,7 @@ function App() {
   // const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
   // const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
+  const [municipiosICMS, setMunicipiosICMS] = useState([]);
 
   useEffect(() => {
     // Função para carregar os arquivos CSV
@@ -246,6 +251,88 @@ function App() {
 
         const cnaesFrequentes = [...top5, outros];
 
+        let combinedMunicipios = {}; // Declaração antes do uso
+
+        async function fetchMunicipioNome(codigoIBGE) {
+          try {
+            const response = await fetch(
+              `https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${codigoIBGE}?orderBy=nome`
+            );
+            if (!response.ok) throw new Error(`Erro ao buscar município ${codigoIBGE}`);
+        
+            const data = await response.json();
+            return data.nome; // Retorna apenas o nome do município
+          } catch (error) {
+            console.error(`Erro ao obter nome do município ${codigoIBGE}:`, error);
+            return codigoIBGE; // Retorna o código caso haja erro
+          }
+        }
+        
+        function accumulateICMSByMunicipality(csvData) {
+          let municipios = {};
+        
+          csvData.forEach((d) => {
+            const municipioOrigem = d.codigo_ibge_municipio_origem;
+            const municipioDestino = d.codigo_ibge_municipio_destino;
+            const icms = +d.icms || 0;
+        
+            if (municipioOrigem) {
+              if (!municipios[municipioOrigem]) {
+                municipios[municipioOrigem] = 0;
+              }
+              municipios[municipioOrigem] += icms;
+            }
+        
+            if (municipioDestino) {
+              if (!municipios[municipioDestino]) {
+                municipios[municipioDestino] = 0;
+              }
+              municipios[municipioDestino] += icms;
+            }
+          });
+        
+          return municipios;
+        }
+        
+        // Processamento dos dados de compras e vendas
+        [compraData, vendaData].forEach((dataSet) => {
+          dataSet.forEach((data) => {
+            const municipios = accumulateICMSByMunicipality(data);
+        
+            Object.keys(municipios).forEach((municipio) => {
+              if (!combinedMunicipios[municipio]) {
+                combinedMunicipios[municipio] = 0;
+              }
+              combinedMunicipios[municipio] += municipios[municipio];
+            });
+          });
+        });
+        
+        // Converter códigos IBGE para nomes antes de salvar no estado
+        async function convertAndSetMunicipios() {
+          const sortedMunicipios = Object.keys(combinedMunicipios)
+            .map((municipio) => ({
+              codigoIBGE: municipio,
+              icmsTotal: combinedMunicipios[municipio],
+            }))
+            .sort((a, b) => b.icmsTotal - a.icmsTotal);
+        
+          const topMunicipios = sortedMunicipios.slice(0, 10); // Top 10 municípios
+        
+          // Buscar nomes dos municípios
+          const municipiosComNomes = await Promise.all(
+            topMunicipios.map(async ({ codigoIBGE, icmsTotal }) => {
+              const nome = await fetchMunicipioNome(codigoIBGE);
+              return { municipio: nome, icmsTotal };
+            })
+          );
+        
+          console.log(municipiosComNomes);
+          setMunicipiosICMS(municipiosComNomes);
+        }
+        
+        // Executa a conversão e atualiza o estado
+        convertAndSetMunicipios();
         setComprasTotalBruto(totaisBrutosCompras);
         setVendasTotalBruto(totaisBrutosVendas);
         setEstadosICMS(limitedEstados);
@@ -279,7 +366,7 @@ function App() {
             </TitleQuestion>
             <VerticalBarPlot data={estadosICMS} height={300} width={450} />
           </ChartCardVerticalBarPlot>
-          <ChartCardBarPlot gridRow="1 / 1" gridColumn="2 / 3">
+          <ChartCardLinePlot gridRow="1 / 1" gridColumn="2 / 3">
             <TitleQuestion>
               Qual foi a evolução mensal do total bruto de compras e vendas?
             </TitleQuestion>
@@ -297,13 +384,19 @@ function App() {
               height={300}
               width={500}
             />
-          </ChartCardBarPlot>
+          </ChartCardLinePlot>
           <ChartCardPizzaPlot gridRow="2 / 2" gridColumn="1/3">
             <TitleQuestion>
             Quais são os CNAEs mais comuns em compras e vendas no estado da Bahia?
             </TitleQuestion>
             <PizzaPlot data={cnaesFrequentes} height={300} width={1000} />
           </ChartCardPizzaPlot>
+          <ChartCardBarPlot gridRow="3 / 3" gridColumn="1 / 2">
+            <TitleQuestion>
+            Qual os principais municípios na arrecadação de ICMS nas compras e vendas?
+            </TitleQuestion>
+            <HorizontalBarPlot data={municipiosICMS} height={300} width={450} />
+          </ChartCardBarPlot>
         </ChartCardContainer>
       </MainContent>
     </DashboardContainer>
