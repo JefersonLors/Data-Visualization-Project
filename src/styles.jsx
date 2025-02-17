@@ -23,7 +23,14 @@ export const Header = styled.div`
   border-radius: 8px;
   align-items: center;
 `;
-
+export const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: #194a7a;
+  color: white;
+  border-radius: 0px 0px 8px 8px;
+  align-items: center;
+`;
 export const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -100,12 +107,12 @@ export const ChartCardScatterPlot = styled.div`
 export const ChartCardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(400px, 1fr));
-  grid-template-rows: repeat(4, minmax(150px, auto));
+  grid-template-rows: repeat(3, minmax(150px, auto));
   gap: 20px;
   background: white;
   padding: 20px;
   align-items: stretch;
-  border-radius: 8px;
+  border-radius: 8px 8px 0px 0px;
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -119,11 +126,18 @@ export const Title = styled.h1`
   font-size: 50px;
 `;
 
-export const TitleQuestion = styled.h6`
-  margin: 0px;
+export const FooterText = styled.p`
   font-family:
     'Lucida' Grande,
     sans-serif;
   text-align: center;
+  font-size: 20px;
+`;
+
+export const TitleQuestion = styled.h6`
+  margin: 0px;
+  font-family: "Gill Sans", sans-serif;
+  text-align: center;
   font-size: 30px;
+  color: #4a4a4a;
 `;

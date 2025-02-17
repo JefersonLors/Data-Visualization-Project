@@ -90,7 +90,7 @@ export default function LinePlot({
       .attr('cx', (d, i) => x(valoresx[i]))
       .attr('cy', (d) => y(d))
       .attr('r', 2.5)
-      .attr('fill', '#99b2b7');
+      .attr('fill', '#536d88');
 
     g.selectAll('.compras-label')
       .data(compras)
@@ -107,7 +107,7 @@ export default function LinePlot({
     g.append('path')
       .data([vendas])
       .attr('fill', 'none')
-      .attr('stroke', '#d9ceb2')
+      .attr('stroke', '#eac195')
       .attr('stroke-width', 1.5)
       .attr('d', line);
 
@@ -119,7 +119,7 @@ export default function LinePlot({
       .attr('cx', (d, i) => x(valoresx[i]))
       .attr('cy', (d) => y(d))
       .attr('r', 2.5)
-      .attr('fill', '#d9ceb2');
+      .attr('fill', '#eac195');
 
     g.selectAll('.vendas-label')
       .data(vendas)
@@ -153,7 +153,7 @@ export default function LinePlot({
       .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
-      .attr('fill', '#99b2b7');
+      .attr('fill', '#536d88');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 10})`)
       .append('text')
@@ -169,7 +169,7 @@ export default function LinePlot({
       .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
-      .attr('fill', '#d9ceb2');
+      .attr('fill', '#eac195');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 30})`)
       .append('text')

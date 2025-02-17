@@ -97,7 +97,7 @@ export default function ScatterPlot({
       .attr('cx', (d) => x(d))
       .attr('cy', (d, i) => y(vendas[i]))
       .attr('r', 4)
-      .attr('fill', '#99b2b7')
+      .attr('fill', '#536d88')
       .attr('opacity', 0.7);
 
     g.selectAll('.grid-line')
