@@ -381,6 +381,11 @@ function App() {
         setVendasTotalBruto(totaisBrutosVendas);
         setEstadosICMS(limitedEstados);
         setCnaesFrequentes(cnaesFrequentes);
+
+        console.log("Total de ICMS arrecadado:", S + vendasICMSTotal);
+        console.log("Número de estados avaliados:", Object.keys(combinedEstados).length);
+        console.log("Número de municípios avaliados:", Object.keys(combinedMunicipios).length);
+
       } catch (error) {
         console.error('Erro ao carregar os arquivos CSV:', error);
       }

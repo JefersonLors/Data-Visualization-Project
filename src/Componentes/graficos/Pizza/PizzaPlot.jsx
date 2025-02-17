@@ -36,7 +36,7 @@ export default function PizzaPlot({
     const radius = Math.min(plotWidth, plotHeight) / 2;
 
     const predefinedColors = [
-      "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+      "#99b2b7", "#7a6a53", "#d5ded9", "#948c75", "#d9ceb2",
       "#cccccc", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
     ];
     

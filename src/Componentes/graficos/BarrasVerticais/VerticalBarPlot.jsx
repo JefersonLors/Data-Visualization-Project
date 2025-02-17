@@ -82,7 +82,7 @@ export default function VerticalBarPlot({
       .attr('y', (d) => y(d.icmsCompras))
       .attr('width', x.bandwidth() / 2)
       .attr('height', (d) => plotHeight - y(d.icmsCompras))
-      .attr('fill', 'blue');
+      .attr('fill', '#99b2b7');
 
     g.selectAll('.bar-vendas')
       .data(data)
@@ -93,7 +93,7 @@ export default function VerticalBarPlot({
       .attr('y', (d) => y(d.icmsVendas))
       .attr('width', x.bandwidth() / 2)
       .attr('height', (d) => plotHeight - y(d.icmsVendas))
-      .attr('fill', 'orange');
+      .attr('fill', '#d9ceb2');
 
     g.append('g')
       .attr('transform', `translate(0, ${plotHeight + 10})`)
@@ -102,7 +102,7 @@ export default function VerticalBarPlot({
       .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
-      .attr('fill', 'blue');
+      .attr('fill', '#99b2b7');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 10})`)
       .append('text')
@@ -118,7 +118,7 @@ export default function VerticalBarPlot({
       .attr('y', gycolor)
       .attr('width', 20)
       .attr('height', 10)
-      .attr('fill', 'orange');
+      .attr('fill', '#d9ceb2');
     g.append('g')
       .attr('transform', `translate(30, ${plotHeight + 30})`)
       .append('text')
