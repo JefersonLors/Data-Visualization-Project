@@ -5,11 +5,11 @@ import {
   Card,
   CardContainer,
   ChartCardBarPlot,
-  ChartCardLinePlot,
   ChartCardContainer,
-  ChartCardVerticalBarPlot,
-  ChartCardScatterPlot,
+  ChartCardLinePlot,
   ChartCardPizzaPlot,
+  ChartCardScatterPlot,
+  ChartCardVerticalBarPlot,
   DashboardContainer,
   Header,
   MainContent,
@@ -17,12 +17,11 @@ import {
   TitleQuestion,
 } from './styles';
 
-import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
 import HorizontalBarPlot from './Componentes/graficos/BarrasHorizontais/HorizontalBarPlot';
+import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarPlot';
+import ScatterPlot from './Componentes/graficos/Dispersão/ScatterPlot';
 import LinePlot from './Componentes/graficos/Linhas/LinePlot';
 import PizzaPlot from './Componentes/graficos/Pizza/PizzaPlot';
-import ScatterPlot from './Componentes/graficos/Dispersão/ScatterPlot';
-
 
 function App() {
   const comprasFiles = [
@@ -48,7 +47,8 @@ function App() {
   const [cnaesFrequentes, setCnaesFrequentes] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
   const [municipiosICMS, setMunicipiosICMS] = useState([]);
-  const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] = useState([]);
+  const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] =
+    useState([]);
 
   useEffect(() => {
     async function loadCSVFiles(files) {
@@ -160,22 +160,21 @@ function App() {
               b.icmsCompras + b.icmsVendas - (a.icmsCompras + a.icmsVendas)
           );
 
-        const limit = 10; 
+        const limit = 10;
         const limitedEstados = sortedEstados.slice(0, limit);
 
-        
         const allCompras = compraData.flat();
         const totalCompras = allCompras.length;
         const comprasCnaesCount = {};
 
-        allCompras.forEach(d => {
+        allCompras.forEach((d) => {
           const cnae = d.cnae;
           const descricao = d.descricao_cnae;
           if (cnae) {
             if (!comprasCnaesCount[cnae]) {
               comprasCnaesCount[cnae] = {
                 count: 0,
-                descricao: descricao || "Descrição não disponível",
+                descricao: descricao || 'Descrição não disponível',
               };
             }
             comprasCnaesCount[cnae].count++;
@@ -186,7 +185,9 @@ function App() {
           .map(([cnae, dados]) => ({
             cnae,
             descricao: dados.descricao,
-            porcentagem: Number(((dados.count / totalCompras) * 100).toFixed(2))
+            porcentagem: Number(
+              ((dados.count / totalCompras) * 100).toFixed(2)
+            ),
           }))
           .sort((a, b) => b.porcentagem - a.porcentagem)
           .slice(0, 5);
@@ -195,15 +196,15 @@ function App() {
         const totalVendas = allVendas.length;
         const vendasCnaesCount = {};
 
-        allVendas.forEach(d => {
+        allVendas.forEach((d) => {
           const cnae = d.cnae;
           const descricao = d.descricao_cnae;
-          
+
           if (cnae) {
             if (!vendasCnaesCount[cnae]) {
               vendasCnaesCount[cnae] = {
                 count: 0,
-                descricao: descricao || "Descrição não disponível",
+                descricao: descricao || 'Descrição não disponível',
               };
             }
             vendasCnaesCount[cnae].count++;
@@ -214,57 +215,60 @@ function App() {
           .map(([cnae, dados]) => ({
             cnae,
             descricao: dados.descricao,
-            porcentagem: Number(((dados.count / totalVendas) * 100).toFixed(2))
+            porcentagem: Number(((dados.count / totalVendas) * 100).toFixed(2)),
           }))
           .sort((a, b) => b.porcentagem - a.porcentagem)
           .slice(0, 5);
 
-        
         const cnaesArray = [...comprasCnaesArray, ...vendasCnaesArray];
 
         const top5 = cnaesArray.slice(0, 5);
         const somaTop5 = top5.reduce((acc, curr) => acc + curr.porcentagem, 0);
-        
+
         const outros = {
           cnae: null,
-          descricao: "Outros",
-          porcentagem: Number((100 - somaTop5).toFixed(2))
+          descricao: 'Outros',
+          porcentagem: Number((100 - somaTop5).toFixed(2)),
         };
 
         const cnaesFrequentes = [...top5, outros];
 
-        let combinedMunicipios = {}; 
+        let combinedMunicipios = {};
 
         async function fetchMunicipioNome(codigoIBGE) {
           try {
             const response = await fetch(
               `https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${codigoIBGE}?orderBy=nome`
             );
-            if (!response.ok) throw new Error(`Erro ao buscar município ${codigoIBGE}`);
-        
+            if (!response.ok)
+              throw new Error(`Erro ao buscar município ${codigoIBGE}`);
+
             const data = await response.json();
             return data.nome;
           } catch (error) {
-            console.error(`Erro ao obter nome do município ${codigoIBGE}:`, error);
+            console.error(
+              `Erro ao obter nome do município ${codigoIBGE}:`,
+              error
+            );
             return codigoIBGE;
           }
         }
-        
+
         function accumulateICMSByMunicipality(csvData) {
           let municipios = {};
-        
+
           csvData.forEach((d) => {
             const municipioOrigem = d.codigo_ibge_municipio_origem;
             const municipioDestino = d.codigo_ibge_municipio_destino;
             const icms = +d.icms || 0;
-        
+
             if (municipioOrigem) {
               if (!municipios[municipioOrigem]) {
                 municipios[municipioOrigem] = 0;
               }
               municipios[municipioOrigem] += icms;
             }
-        
+
             if (municipioDestino) {
               if (!municipios[municipioDestino]) {
                 municipios[municipioDestino] = 0;
@@ -272,14 +276,14 @@ function App() {
               municipios[municipioDestino] += icms;
             }
           });
-        
+
           return municipios;
         }
-        
+
         [compraData, vendaData].forEach((dataSet) => {
           dataSet.forEach((data) => {
             const municipios = accumulateICMSByMunicipality(data);
-        
+
             Object.keys(municipios).forEach((municipio) => {
               if (!combinedMunicipios[municipio]) {
                 combinedMunicipios[municipio] = 0;
@@ -288,7 +292,7 @@ function App() {
             });
           });
         });
-        
+
         async function convertAndSetMunicipios() {
           const sortedMunicipios = Object.keys(combinedMunicipios)
             .map((municipio) => ({
@@ -296,25 +300,25 @@ function App() {
               icmsTotal: combinedMunicipios[municipio],
             }))
             .sort((a, b) => b.icmsTotal - a.icmsTotal);
-        
+
           const topMunicipios = sortedMunicipios.slice(0, 10);
-        
+
           const municipiosComNomes = await Promise.all(
             topMunicipios.map(async ({ codigoIBGE, icmsTotal }) => {
               const nome = await fetchMunicipioNome(codigoIBGE);
               return { municipio: nome, icmsTotal };
             })
           );
-        
+
           setMunicipiosICMS(municipiosComNomes);
         }
-        
+
         const Compras = compraData.flat();
         const Vendas = vendaData.flat();
 
         const municipiosTotais = {};
 
-        Compras.forEach(d => {
+        Compras.forEach((d) => {
           const municipio = d.codigo_ibge_municipio_destino;
           const totalBruto = +d.total_bruto || 0;
           if (municipio) {
@@ -325,8 +329,8 @@ function App() {
           }
         });
 
-        Vendas.forEach(d => {
-          const municipio = d.codigo_ibge_municipio_origem; 
+        Vendas.forEach((d) => {
+          const municipio = d.codigo_ibge_municipio_origem;
           const totalBruto = +d.total_bruto || 0;
           if (municipio) {
             if (!municipiosTotais[municipio]) {
@@ -336,22 +340,28 @@ function App() {
           }
         });
 
-        const municipiosArray = Object.entries(municipiosTotais).map(([codigo, totais]) => ({
-          codigo,
-          compras: totais.compras,
-          vendas: totais.vendas,
-        }));
+        const municipiosArray = Object.entries(municipiosTotais).map(
+          ([codigo, totais]) => ({
+            codigo,
+            compras: totais.compras,
+            vendas: totais.vendas,
+          })
+        );
 
-        const topVendas = [...municipiosArray]
-          .sort((a, b) => b.vendas - a.vendas)
+        const topVendas = [...municipiosArray].sort(
+          (a, b) => b.vendas - a.vendas
+        );
 
-        const topCompras = [...municipiosArray]
-          .sort((a, b) => b.compras - a.compras)
+        const topCompras = [...municipiosArray].sort(
+          (a, b) => b.compras - a.compras
+        );
 
         const combinedTopMunicipios = [...topVendas, ...topCompras];
 
         const municipiosUnicos = Array.from(
-          new Map(combinedTopMunicipios.map(item => [item.codigo, item])).values()
+          new Map(
+            combinedTopMunicipios.map((item) => [item.codigo, item])
+          ).values()
         );
 
         const municipiosComNomes = await Promise.all(
@@ -366,19 +376,17 @@ function App() {
 
         setTopMunicipiosVendasECompras(municipiosComNomes);
 
-
         convertAndSetMunicipios();
         setComprasTotalBruto(totaisBrutosCompras);
         setVendasTotalBruto(totaisBrutosVendas);
         setEstadosICMS(limitedEstados);
         setCnaesFrequentes(cnaesFrequentes);
-
       } catch (error) {
         console.error('Erro ao carregar os arquivos CSV:', error);
       }
     }
 
-    loadData(); 
+    loadData();
   }, []);
 
   return (
@@ -422,21 +430,27 @@ function App() {
           </ChartCardLinePlot>
           <ChartCardPizzaPlot gridRow="2 / 2" gridColumn="1/3">
             <TitleQuestion>
-            Quais são os CNAEs mais comuns em compras e vendas no estado da Bahia?
+              Quais são os CNAEs mais comuns em compras e vendas no estado da
+              Bahia?
             </TitleQuestion>
             <PizzaPlot data={cnaesFrequentes} height={300} width={1000} />
           </ChartCardPizzaPlot>
           <ChartCardBarPlot gridRow="3 / 3" gridColumn="1 / 2">
             <TitleQuestion>
-            Qual os principais municípios na arrecadação de ICMS nas compras e vendas?
+              Qual os principais municípios na arrecadação de ICMS nas compras e
+              vendas?
             </TitleQuestion>
             <HorizontalBarPlot data={municipiosICMS} height={300} width={450} />
           </ChartCardBarPlot>
           <ChartCardScatterPlot gridRow="3 / 3" gridColumn="2 / 2">
             <TitleQuestion>
-            Os municípios que mais vendem são os que mais compram?
+              Os municípios que mais vendem são os que mais compram?
             </TitleQuestion>
-            <ScatterPlot data={topMunicipiosVendasECompras} height={300} width={450} />
+            <ScatterPlot
+              data={topMunicipiosVendasECompras}
+              height={300}
+              width={450}
+            />
           </ChartCardScatterPlot>
         </ChartCardContainer>
       </MainContent>

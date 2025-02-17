@@ -35,9 +35,9 @@ export default function VerticalBarPlot({
 
     svg.selectAll('*').remove();
 
-    const gx = -115
-    const gy = -250
-    const gycolor = -258
+    const gx = -115;
+    const gy = -250;
+    const gycolor = -258;
 
     const g = svg
       .append('g')
