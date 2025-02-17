@@ -59,10 +59,9 @@ export default function LinePlot({
       .ticks(8)
       .tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
 
-   
-    const gx = -115
-    const gy = -250
-    const gycolor = -258
+    const gx = -115;
+    const gy = -250;
+    const gycolor = -258;
 
     g.append('g')
       .attr('transform', `translate(0,${plotHeight})`)

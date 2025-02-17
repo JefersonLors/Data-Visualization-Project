@@ -40,18 +40,32 @@ export default function ScatterPlot({
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     console.log(data);
-    const compras = data.map(d => d.compras);
+    const compras = data.map((d) => d.compras);
     console.log(compras);
-    const vendas = data.map(d => d.vendas);
+    const vendas = data.map((d) => d.vendas);
     console.log(vendas);
-    const municipios = data.map(d => d.nome);
+    const municipios = data.map((d) => d.nome);
     console.log(municipios);
 
-    const x = d3.scaleLinear().domain([0, d3.max(compras)]).nice().range([0, plotWidth]);
-    const y = d3.scaleLinear().domain([0, d3.max(vendas)]).nice().range([plotHeight, 0]);
+    const x = d3
+      .scaleLinear()
+      .domain([0, d3.max(compras)])
+      .nice()
+      .range([0, plotWidth]);
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(vendas)])
+      .nice()
+      .range([plotHeight, 0]);
 
-    const xAxis = d3.axisBottom(x).ticks(8).tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
-    const yAxis = d3.axisLeft(y).ticks(8).tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
+    const xAxis = d3
+      .axisBottom(x)
+      .ticks(8)
+      .tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
+    const yAxis = d3
+      .axisLeft(y)
+      .ticks(8)
+      .tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
 
     g.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
