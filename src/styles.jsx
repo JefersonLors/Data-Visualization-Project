@@ -85,6 +85,17 @@ export const ChartCardLinePlot = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(180, 2, 100, 0.1);
 `;
+export const ChartCardScatterPlot = styled.div`
+  background: rgba(128, 133, 148, 0.1);
+  grid-row: ${(props) =>
+    props.gridRow || 'auto'}; // Linha definida por parâmetro
+  grid-column: ${(props) =>
+    props.gridColumn || 'auto'}; // Coluna definida por parâmetro
+  padding: 20px;
+  padding-right: 90px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(180, 2, 100, 0.1);
+`;
 
 export const ChartCardContainer = styled.div`
   display: grid;
