@@ -37,25 +37,21 @@ export default function LinePlot({
     const plotWidth = width - margin.left - margin.right;
     const plotHeight = height - margin.top - margin.bottom;
 
-    // Limpeza do SVG antes de desenhar
     svg.selectAll('*').remove();
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Cálculo do máximo valor para a escala y
     const max = Math.pow(
       10,
       Math.ceil(Math.log10(d3.max([d3.max(compras), d3.max(vendas)])))
     );
 
-    // Escalas
     const x = d3.scalePoint().domain(valoresx).range([0, plotWidth]);
 
     const y = d3.scaleLinear().domain([0, max]).nice().range([plotHeight, 0]);
 
-    // Eixos
     const xAxis = d3.axisBottom(x).tickFormat((d) => d);
 
     const yAxis = d3
@@ -63,11 +59,10 @@ export default function LinePlot({
       .ticks(8)
       .tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
 
-   
-    const gx = -115
-    const gy = -250
-    const gycolor = -258
-      // Adiciona os eixos
+    const gx = -115;
+    const gy = -250;
+    const gycolor = -258;
+
     g.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
       .call(xAxis)
@@ -75,7 +70,6 @@ export default function LinePlot({
 
     g.append('g').call(yAxis).style('font-size', '12px');
 
-    // Linha de compras
     const line = d3
       .line()
       .x((d, i) => x(valoresx[i]))
@@ -88,7 +82,6 @@ export default function LinePlot({
       .attr('stroke-width', 1.5)
       .attr('d', line);
 
-    // Adiciona círculos e rótulos para as compras
     g.selectAll('.compras-point')
       .data(compras)
       .enter()
@@ -111,7 +104,6 @@ export default function LinePlot({
       .attr('fill', 'black')
       .text((d) => d3.format('.2s')(d).replace('G', 'B'));
 
-    // Linha de vendas
     g.append('path')
       .data([vendas])
       .attr('fill', 'none')
@@ -119,7 +111,6 @@ export default function LinePlot({
       .attr('stroke-width', 1.5)
       .attr('d', line);
 
-    // Adiciona círculos e rótulos para as vendas
     g.selectAll('.vendas-point')
       .data(vendas)
       .enter()
@@ -142,7 +133,6 @@ export default function LinePlot({
       .attr('fill', 'black')
       .text((d) => d3.format('.2s')(d).replace('G', 'B'));
 
-    // Linhas de grade horizontais
     g.selectAll('.grid-line')
       .data(y.ticks())
       .enter()
@@ -156,7 +146,6 @@ export default function LinePlot({
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '4');
 
-    // Legendas
     g.append('g')
       .attr('transform', `translate(0, ${plotHeight + 10})`)
       .append('rect')

@@ -33,18 +33,16 @@ export default function VerticalBarPlot({
     const plotWidth = width - margin.left - margin.right;
     const plotHeight = height - margin.top - margin.bottom;
 
-    // Limpeza do SVG antes de desenhar
     svg.selectAll('*').remove();
 
-    const gx = -115
-    const gy = -250
-    const gycolor = -258
+    const gx = -115;
+    const gy = -250;
+    const gycolor = -258;
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Criação das escalas
     const x = d3
       .scaleBand()
       .domain(data.map((d) => d.estado))
@@ -57,7 +55,6 @@ export default function VerticalBarPlot({
       .nice()
       .range([plotHeight, 0]);
 
-    // Adiciona os eixos
     const yAxis = d3
       .axisLeft(y)
       .ticks(8)
@@ -76,7 +73,6 @@ export default function VerticalBarPlot({
       .selectAll('text')
       .style('font-size', '12px');
 
-    // Adiciona as barras de ICMS de compras
     g.selectAll('.bar-compras')
       .data(data)
       .enter()
@@ -88,7 +84,6 @@ export default function VerticalBarPlot({
       .attr('height', (d) => plotHeight - y(d.icmsCompras))
       .attr('fill', 'blue');
 
-    // Adiciona as barras de ICMS de vendas
     g.selectAll('.bar-vendas')
       .data(data)
       .enter()
@@ -100,7 +95,6 @@ export default function VerticalBarPlot({
       .attr('height', (d) => plotHeight - y(d.icmsVendas))
       .attr('fill', 'orange');
 
-    // Legendas
     g.append('g')
       .attr('transform', `translate(0, ${plotHeight + 10})`)
       .append('rect')
