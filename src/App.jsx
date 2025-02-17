@@ -365,7 +365,6 @@ function App() {
         );
 
         setTopMunicipiosVendasECompras(municipiosComNomes);
-        console.log(municipiosComNomes);
 
 
         convertAndSetMunicipios();

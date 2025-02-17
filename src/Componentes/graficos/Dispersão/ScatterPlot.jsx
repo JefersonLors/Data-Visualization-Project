@@ -39,13 +39,11 @@ export default function ScatterPlot({
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    console.log(data);
+
     const compras = data.map(d => d.compras);
-    console.log(compras);
     const vendas = data.map(d => d.vendas);
-    console.log(vendas);
     const municipios = data.map(d => d.nome);
-    console.log(municipios);
+
 
     const x = d3.scaleLinear().domain([0, d3.max(compras)]).nice().range([0, plotWidth]);
     const y = d3.scaleLinear().domain([0, d3.max(vendas)]).nice().range([plotHeight, 0]);
