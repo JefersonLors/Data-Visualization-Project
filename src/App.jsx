@@ -11,6 +11,8 @@ import {
   ChartCardScatterPlot,
   ChartCardVerticalBarPlot,
   DashboardContainer,
+  Footer,
+  FooterText,
   Header,
   MainContent,
   Title,
@@ -438,8 +440,8 @@ function App() {
           </ChartCardPizzaPlot>
           <ChartCardBarPlot gridRow="3 / 3" gridColumn="1 / 2">
             <TitleQuestion>
-              Qual os principais municípios na arrecadação de ICMS nas compras e
-              vendas?
+              Quais os principais municípios na arrecadação de ICMS nas compras
+              e vendas?
             </TitleQuestion>
             <HorizontalBarPlot data={municipiosICMS} height={300} width={450} />
           </ChartCardBarPlot>
@@ -454,6 +456,11 @@ function App() {
             />
           </ChartCardScatterPlot>
         </ChartCardContainer>
+        <Footer>
+          <FooterText>
+            © 2025 - Caian Satana - Jeferson Santana - INF022
+          </FooterText>
+        </Footer>
       </MainContent>
     </DashboardContainer>
   );
