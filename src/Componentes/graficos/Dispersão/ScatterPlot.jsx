@@ -33,14 +33,12 @@ export default function ScatterPlot({
     const plotWidth = width - margin.left - margin.right;
     const plotHeight = height - margin.top - margin.bottom;
 
-    // Limpeza do SVG antes de desenhar
     svg.selectAll('*').remove();
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Extraindo compras, vendas e nomes dos dados
     console.log(data);
     const compras = data.map(d => d.compras);
     console.log(compras);
@@ -49,15 +47,12 @@ export default function ScatterPlot({
     const municipios = data.map(d => d.nome);
     console.log(municipios);
 
-    // Escalas para o gráfico
     const x = d3.scaleLinear().domain([0, d3.max(compras)]).nice().range([0, plotWidth]);
     const y = d3.scaleLinear().domain([0, d3.max(vendas)]).nice().range([plotHeight, 0]);
 
-    // Eixos
     const xAxis = d3.axisBottom(x).ticks(8).tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
     const yAxis = d3.axisLeft(y).ticks(8).tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
 
-    // Adiciona os eixos
     g.append('g')
       .attr('transform', `translate(0,${plotHeight})`)
       .call(xAxis)
@@ -65,7 +60,6 @@ export default function ScatterPlot({
 
     g.append('g').call(yAxis).style('font-size', '12px');
 
-    // Adicionar títulos aos eixos
     g.append('text')
       .attr('class', 'x-axis-label')
       .attr('x', plotWidth / 2)
@@ -83,7 +77,6 @@ export default function ScatterPlot({
       .style('font-size', '14px')
       .text('Total Bruto de Vendas');
 
-    // Adicionar pontos (circulares) ao gráfico de dispersão
     g.selectAll('.scatter-point')
       .data(compras)
       .enter()
@@ -95,7 +88,6 @@ export default function ScatterPlot({
       .attr('fill', 'steelblue')
       .attr('opacity', 0.7);
 
-    // Linhas de grade horizontais
     g.selectAll('.grid-line')
       .data(y.ticks())
       .enter()

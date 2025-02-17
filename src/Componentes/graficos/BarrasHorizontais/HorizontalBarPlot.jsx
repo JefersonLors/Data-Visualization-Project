@@ -33,14 +33,12 @@ export default function HorizontalBarPlot({
     const plotWidth = width - margin.left - margin.right;
     const plotHeight = height - margin.top - margin.bottom;
 
-    // Limpa o SVG antes de desenhar
     svg.selectAll('*').remove();
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Escalas
     const y = d3
       .scaleBand()
       .domain(data.map((d) => d.municipio))
@@ -53,7 +51,6 @@ export default function HorizontalBarPlot({
       .nice()
       .range([0, plotWidth]);
 
-    // Adiciona os eixos
     const yAxis = d3.axisLeft(y);
     const xAxis = d3.axisBottom(x).ticks(8).tickFormat((d) => d3.format('.2s')(d).replace('G', 'B'));
 
@@ -68,7 +65,6 @@ export default function HorizontalBarPlot({
       .call(xAxis)
       .style('font-size', '12px');
 
-    // Adiciona as barras
     g.selectAll('.bar')
       .data(data)
       .enter()
@@ -80,18 +76,17 @@ export default function HorizontalBarPlot({
       .attr('height', y.bandwidth())
       .attr('fill', 'steelblue');
 
-    // Adiciona os valores no final das barras
     g.selectAll('.bar-label')
       .data(data)
       .enter()
       .append('text')
       .attr('class', 'bar-label')
-      .attr('x', (d) => x(d.icmsTotal) + 5) // Posição no final da barra com um pequeno deslocamento
-      .attr('y', (d) => y(d.municipio) + y.bandwidth() / 2) // Centraliza na barra
-      .attr('dy', '0.35em') // Ajusta o alinhamento vertical
-      .text((d) => d3.format('.2s')(d.icmsTotal).replace('G', 'B')) // Formata o valor
+      .attr('x', (d) => x(d.icmsTotal) + 5)
+      .attr('y', (d) => y(d.municipio) + y.bandwidth() / 2) 
+      .attr('dy', '0.35em') 
+      .text((d) => d3.format('.2s')(d.icmsTotal).replace('G', 'B')) 
       .style('font-size', '12px')
-      .style('fill', 'black'); // Cor do texto
+      .style('fill', 'black'); 
   }, [data]);
 
   return (

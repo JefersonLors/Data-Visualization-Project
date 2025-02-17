@@ -35,29 +35,24 @@ export default function PizzaPlot({
     const plotHeight = height - margin.top - margin.bottom;
     const radius = Math.min(plotWidth, plotHeight) / 2;
 
-    // Limpeza do SVG antes de desenhar
     svg.selectAll('*').remove();
 
     const g = svg
       .append('g')
       .attr('transform', `translate(${margin.left + plotWidth / 8},${margin.top + plotHeight / 2})`);
 
-    // Criação do gerador de pizza
     const pie = d3.pie()
       .value(d => d.porcentagem)
       .sort(null);
 
-    // Gerador de arcos
     const arc = d3.arc()
       .innerRadius(0)
       .outerRadius(radius);
 
-    // Escala de cores
     const color = d3.scaleOrdinal()
       .domain(data.map(d => d.descricao))
       .range(d3.schemeCategory10);
 
-    // Desenha os segmentos
     const arcs = g.selectAll('arc')
       .data(pie(data))
       .enter()
@@ -70,13 +65,11 @@ export default function PizzaPlot({
       .attr('stroke', 'white')
       .style('stroke-width', '2px');
 
-    // Adiciona as porcentagens no gráfico com um pequeno afastamento
     arcs.append('text')
       .attr('transform', (d) => {
         const centroid = arc.centroid(d);
-        // Afastando o texto um pouco mais do centro
-        const offset = 20; // Pode ajustar esse valor conforme necessário
-        return `translate(${centroid[0] * 1.5},${centroid[1] * 1.5})`; // Multiplicando por 1.1 para afastar
+        const offset = 20; 
+        return `translate(${centroid[0] * 1.5},${centroid[1] * 1.5})`; 
       })
       .attr('dy', '.35em')
       .style('text-anchor', 'middle')
@@ -85,7 +78,6 @@ export default function PizzaPlot({
       .attr('stroke-width', 1.5)
       .text((d) => `${d.data.porcentagem}%`);
 
-    // Legenda
     const legend = svg
       .append('g')
       .attr('transform', `translate(${plotWidth - 200},${margin.top})`);

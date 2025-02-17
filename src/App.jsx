@@ -42,30 +42,20 @@ function App() {
     'data/vendas/Venda_2019_05.csv',
     'data/vendas/Venda_2019_06.csv',
   ];
-  //const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho'];
 
   const [comprasTotalBruto, setComprasTotalBruto] = useState([]);
   const [vendasTotalBruto, setVendasTotalBruto] = useState([]);
-  const [comprasIcms, setComprasIcms] = useState([]);
-  const [vendasIcms, setVendasIcms] = useState([]);
   const [cnaesFrequentes, setCnaesFrequentes] = useState([]);
-  // const [comprasEstadosOrigem, setComprasEstadosOrigem] = useState([]);
-  // const [vendasEstadosOrigem, setVendasEstadosOrigem] = useState([]);
-  // const [comprasEstadosDestino, setComprasEstadosDestino] = useState([]);
-  // const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
   const [municipiosICMS, setMunicipiosICMS] = useState([]);
-  const [municipiosMediaICMS, setmunicipiosMediaICMS] = useState([]);
   const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] = useState([]);
 
   useEffect(() => {
-    // Função para carregar os arquivos CSV
     async function loadCSVFiles(files) {
       const csvDataArray = await Promise.all(files.map((file) => d3.csv(file)));
       return csvDataArray;
     }
 
-    // Função para calcular a soma
     async function sumData(csvData, column) {
       const sumTotalBruto = csvData.reduce(
         (acc, d) => acc + (+d[column] || 0),
@@ -74,7 +64,6 @@ function App() {
       return sumTotalBruto;
     }
 
-    // Função para acumular ICMS e estados
     function accumulateICMSAndStates(csvData, tipo) {
       let estados = {};
       let icmsTotal = 0;
@@ -84,7 +73,6 @@ function App() {
           tipo === 'compras' ? d.estado_origem : d.estado_destino;
         const icms = +d.icms || 0;
 
-        // Acumula o ICMS e o estado de origem/destino
         if (!estados[estadoOrigem]) {
           estados[estadoOrigem] = { count: 0, icmsTotal: 0 };
         }
@@ -96,14 +84,11 @@ function App() {
       return { estados, icmsTotal };
     }
 
-    // Função principal para carregar e armazenar os dados
     async function loadData() {
       try {
-        // Carregar os arquivos de compras e vendas uma vez
         const compraData = await loadCSVFiles(comprasFiles);
         const vendaData = await loadCSVFiles(vendasFiles);
 
-        // Calcular os totais brutos para cada arquivo de compras e vendas
         const totaisBrutosCompras = await Promise.all(
           compraData.map((data) => sumData(data, 'total_bruto'))
         );
@@ -111,7 +96,6 @@ function App() {
           vendaData.map((data) => sumData(data, 'total_bruto'))
         );
 
-        // Acumular ICMS e estados para compras e vendas
         const comprasEstados = [];
         const vendasEstados = [];
         let comprasICMSTotal = 0;
@@ -135,7 +119,6 @@ function App() {
           vendasICMSTotal += icmsTotal;
         });
 
-        // Combina os estados das compras e vendas
         const combinedEstados = {};
         comprasEstados.forEach((estados) => {
           Object.keys(estados).forEach((estado) => {
@@ -167,7 +150,6 @@ function App() {
           });
         });
 
-        // Ordenar os estados por compras e vendas (ou ICMS) em ordem decrescente
         const sortedEstados = Object.keys(combinedEstados)
           .map((estado) => ({
             estado,
@@ -178,7 +160,7 @@ function App() {
               b.icmsCompras + b.icmsVendas - (a.icmsCompras + a.icmsVendas)
           );
 
-        const limit = 10; // Você pode passar esse valor para controlar o limite de estados
+        const limit = 10; 
         const limitedEstados = sortedEstados.slice(0, limit);
 
         
@@ -188,8 +170,7 @@ function App() {
 
         allCompras.forEach(d => {
           const cnae = d.cnae;
-          const descricao = d.descricao_cnae; // Supondo que a coluna existe
-          
+          const descricao = d.descricao_cnae;
           if (cnae) {
             if (!comprasCnaesCount[cnae]) {
               comprasCnaesCount[cnae] = {
@@ -210,7 +191,6 @@ function App() {
           .sort((a, b) => b.porcentagem - a.porcentagem)
           .slice(0, 5);
 
-        // Processar CNAEs frequentes para vendas
         const allVendas = vendaData.flat();
         const totalVendas = allVendas.length;
         const vendasCnaesCount = {};
@@ -242,11 +222,9 @@ function App() {
         
         const cnaesArray = [...comprasCnaesArray, ...vendasCnaesArray];
 
-        // Calcula a soma das porcentagens dos top 5 CNAEs
         const top5 = cnaesArray.slice(0, 5);
         const somaTop5 = top5.reduce((acc, curr) => acc + curr.porcentagem, 0);
         
-        // Calcula o restante da porcentagem (Outros)
         const outros = {
           cnae: null,
           descricao: "Outros",
@@ -255,7 +233,7 @@ function App() {
 
         const cnaesFrequentes = [...top5, outros];
 
-        let combinedMunicipios = {}; // Declaração antes do uso
+        let combinedMunicipios = {}; 
 
         async function fetchMunicipioNome(codigoIBGE) {
           try {
@@ -265,10 +243,10 @@ function App() {
             if (!response.ok) throw new Error(`Erro ao buscar município ${codigoIBGE}`);
         
             const data = await response.json();
-            return data.nome; // Retorna apenas o nome do município
+            return data.nome;
           } catch (error) {
             console.error(`Erro ao obter nome do município ${codigoIBGE}:`, error);
-            return codigoIBGE; // Retorna o código caso haja erro
+            return codigoIBGE;
           }
         }
         
@@ -298,7 +276,6 @@ function App() {
           return municipios;
         }
         
-        // Processamento dos dados de compras e vendas
         [compraData, vendaData].forEach((dataSet) => {
           dataSet.forEach((data) => {
             const municipios = accumulateICMSByMunicipality(data);
@@ -312,7 +289,6 @@ function App() {
           });
         });
         
-        // Converter códigos IBGE para nomes antes de salvar no estado
         async function convertAndSetMunicipios() {
           const sortedMunicipios = Object.keys(combinedMunicipios)
             .map((municipio) => ({
@@ -321,9 +297,8 @@ function App() {
             }))
             .sort((a, b) => b.icmsTotal - a.icmsTotal);
         
-          const topMunicipios = sortedMunicipios.slice(0, 10); // Top 10 municípios
+          const topMunicipios = sortedMunicipios.slice(0, 10);
         
-          // Buscar nomes dos municípios
           const municipiosComNomes = await Promise.all(
             topMunicipios.map(async ({ codigoIBGE, icmsTotal }) => {
               const nome = await fetchMunicipioNome(codigoIBGE);
@@ -334,13 +309,11 @@ function App() {
           setMunicipiosICMS(municipiosComNomes);
         }
         
-        // Novo processamento para totais brutos por município
         const Compras = compraData.flat();
         const Vendas = vendaData.flat();
 
         const municipiosTotais = {};
 
-        // Processar compras
         Compras.forEach(d => {
           const municipio = d.codigo_ibge_municipio_destino;
           const totalBruto = +d.total_bruto || 0;
@@ -352,7 +325,6 @@ function App() {
           }
         });
 
-        // Processar vendas
         Vendas.forEach(d => {
           const municipio = d.codigo_ibge_municipio_origem; 
           const totalBruto = +d.total_bruto || 0;
@@ -364,7 +336,6 @@ function App() {
           }
         });
 
-        // Criar arrays ordenados
         const municipiosArray = Object.entries(municipiosTotais).map(([codigo, totais]) => ({
           codigo,
           compras: totais.compras,
@@ -377,10 +348,8 @@ function App() {
         const topCompras = [...municipiosArray]
           .sort((a, b) => b.compras - a.compras)
 
-        // Combinar e buscar nomes
         const combinedTopMunicipios = [...topVendas, ...topCompras];
 
-        // Remover duplicatas com base no código
         const municipiosUnicos = Array.from(
           new Map(combinedTopMunicipios.map(item => [item.codigo, item])).values()
         );
@@ -399,7 +368,6 @@ function App() {
         console.log(municipiosComNomes);
 
 
-        // Executa a conversão e atualiza o estado
         convertAndSetMunicipios();
         setComprasTotalBruto(totaisBrutosCompras);
         setVendasTotalBruto(totaisBrutosVendas);
@@ -411,7 +379,7 @@ function App() {
       }
     }
 
-    loadData(); // Chama a função para carregar os dados
+    loadData(); 
   }, []);
 
   return (
