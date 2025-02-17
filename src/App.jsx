@@ -342,7 +342,7 @@ function App() {
 
         // Processar compras
         Compras.forEach(d => {
-          const municipio = d.codigo_ibge_municipio_origem;
+          const municipio = d.codigo_ibge_municipio_destino;
           const totalBruto = +d.total_bruto || 0;
           if (municipio) {
             if (!municipiosTotais[municipio]) {
@@ -354,7 +354,7 @@ function App() {
 
         // Processar vendas
         Vendas.forEach(d => {
-          const municipio = d.codigo_ibge_municipio_destino;
+          const municipio = d.codigo_ibge_municipio_origem; 
           const totalBruto = +d.total_bruto || 0;
           if (municipio) {
             if (!municipiosTotais[municipio]) {
@@ -373,11 +373,9 @@ function App() {
 
         const topVendas = [...municipiosArray]
           .sort((a, b) => b.vendas - a.vendas)
-          .slice(0, 10);
 
         const topCompras = [...municipiosArray]
           .sort((a, b) => b.compras - a.compras)
-          .slice(0, 10);
 
         // Combinar e buscar nomes
         const combinedTopMunicipios = [...topVendas, ...topCompras];
