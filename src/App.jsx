@@ -8,6 +8,7 @@ import {
   ChartCardLinePlot,
   ChartCardContainer,
   ChartCardVerticalBarPlot,
+  ChartCardScatterPlot,
   ChartCardPizzaPlot,
   DashboardContainer,
   Header,
@@ -20,6 +21,7 @@ import VerticalBarPlot from './Componentes/graficos/BarrasVerticais/VerticalBarP
 import HorizontalBarPlot from './Componentes/graficos/BarrasHorizontais/HorizontalBarPlot';
 import LinePlot from './Componentes/graficos/Linhas/LinePlot';
 import PizzaPlot from './Componentes/graficos/Pizza/PizzaPlot';
+import ScatterPlot from './Componentes/graficos/Dispersão/ScatterPlot';
 
 
 function App() {
@@ -53,6 +55,8 @@ function App() {
   // const [vendasEstadosDestino, setVendasEstadosDestino] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
   const [municipiosICMS, setMunicipiosICMS] = useState([]);
+  const [municipiosMediaICMS, setmunicipiosMediaICMS] = useState([]);
+  const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] = useState([]);
 
   useEffect(() => {
     // Função para carregar os arquivos CSV
@@ -327,10 +331,76 @@ function App() {
             })
           );
         
-          console.log(municipiosComNomes);
           setMunicipiosICMS(municipiosComNomes);
         }
         
+        // Novo processamento para totais brutos por município
+        const Compras = compraData.flat();
+        const Vendas = vendaData.flat();
+
+        const municipiosTotais = {};
+
+        // Processar compras
+        Compras.forEach(d => {
+          const municipio = d.codigo_ibge_municipio_origem;
+          const totalBruto = +d.total_bruto || 0;
+          if (municipio) {
+            if (!municipiosTotais[municipio]) {
+              municipiosTotais[municipio] = { compras: 0, vendas: 0 };
+            }
+            municipiosTotais[municipio].compras += totalBruto;
+          }
+        });
+
+        // Processar vendas
+        Vendas.forEach(d => {
+          const municipio = d.codigo_ibge_municipio_destino;
+          const totalBruto = +d.total_bruto || 0;
+          if (municipio) {
+            if (!municipiosTotais[municipio]) {
+              municipiosTotais[municipio] = { compras: 0, vendas: 0 };
+            }
+            municipiosTotais[municipio].vendas += totalBruto;
+          }
+        });
+
+        // Criar arrays ordenados
+        const municipiosArray = Object.entries(municipiosTotais).map(([codigo, totais]) => ({
+          codigo,
+          compras: totais.compras,
+          vendas: totais.vendas,
+        }));
+
+        const topVendas = [...municipiosArray]
+          .sort((a, b) => b.vendas - a.vendas)
+          .slice(0, 10);
+
+        const topCompras = [...municipiosArray]
+          .sort((a, b) => b.compras - a.compras)
+          .slice(0, 10);
+
+        // Combinar e buscar nomes
+        const combinedTopMunicipios = [...topVendas, ...topCompras];
+
+        // Remover duplicatas com base no código
+        const municipiosUnicos = Array.from(
+          new Map(combinedTopMunicipios.map(item => [item.codigo, item])).values()
+        );
+
+        const municipiosComNomes = await Promise.all(
+          municipiosUnicos.map(async (municipio) => {
+            const nome = await fetchMunicipioNome(municipio.codigo);
+            return {
+              ...municipio,
+              nome,
+            };
+          })
+        );
+
+        setTopMunicipiosVendasECompras(municipiosComNomes);
+        console.log(municipiosComNomes);
+
+
         // Executa a conversão e atualiza o estado
         convertAndSetMunicipios();
         setComprasTotalBruto(totaisBrutosCompras);
@@ -397,6 +467,12 @@ function App() {
             </TitleQuestion>
             <HorizontalBarPlot data={municipiosICMS} height={300} width={450} />
           </ChartCardBarPlot>
+          <ChartCardScatterPlot gridRow="3 / 3" gridColumn="2 / 2">
+            <TitleQuestion>
+            Os municípios que mais vendem são os que mais compram?
+            </TitleQuestion>
+            <ScatterPlot data={topMunicipiosVendasECompras} height={300} width={450} />
+          </ChartCardScatterPlot>
         </ChartCardContainer>
       </MainContent>
     </DashboardContainer>
