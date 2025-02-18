@@ -35,6 +35,12 @@ export default function PizzaPlot({
     const plotHeight = height - margin.top - margin.bottom;
     const radius = Math.min(plotWidth, plotHeight) / 2;
 
+    const predefinedColors = [
+      "#99b2b7","#1693a5", "#536d88", "#19274e", "#0f132e",
+      "#b49b85","#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
+    ];
+    
+
     svg.selectAll('*').remove();
 
     const g = svg
@@ -49,9 +55,7 @@ export default function PizzaPlot({
       .innerRadius(0)
       .outerRadius(radius);
 
-    const color = d3.scaleOrdinal()
-      .domain(data.map(d => d.descricao))
-      .range(d3.schemeCategory10);
+    const color = d3.scaleOrdinal(predefinedColors);
 
     const arcs = g.selectAll('arc')
       .data(pie(data))
@@ -61,9 +65,10 @@ export default function PizzaPlot({
 
     arcs.append('path')
       .attr('d', arc)
-      .attr('fill', (d) => color(d.data.descricao))
+      .attr('fill', (d, i) => predefinedColors[i % predefinedColors.length])
       .attr('stroke', 'white')
       .style('stroke-width', '2px');
+    
 
     arcs.append('text')
       .attr('transform', (d) => {

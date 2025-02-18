@@ -74,7 +74,7 @@ export default function HorizontalBarPlot({
       .attr('x', 0)
       .attr('width', (d) => x(d.icmsTotal))
       .attr('height', y.bandwidth())
-      .attr('fill', 'steelblue');
+      .attr('fill', '#536d88');
 
     g.selectAll('.bar-label')
       .data(data)

@@ -39,13 +39,11 @@ export default function ScatterPlot({
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    console.log(data);
-    const compras = data.map((d) => d.compras);
-    console.log(compras);
-    const vendas = data.map((d) => d.vendas);
-    console.log(vendas);
-    const municipios = data.map((d) => d.nome);
-    console.log(municipios);
+
+    const compras = data.map(d => d.compras);
+    const vendas = data.map(d => d.vendas);
+    const municipios = data.map(d => d.nome);
+
 
     const x = d3
       .scaleLinear()
@@ -99,7 +97,7 @@ export default function ScatterPlot({
       .attr('cx', (d) => x(d))
       .attr('cy', (d, i) => y(vendas[i]))
       .attr('r', 4)
-      .attr('fill', 'steelblue')
+      .attr('fill', '#536d88')
       .attr('opacity', 0.7);
 
     g.selectAll('.grid-line')
