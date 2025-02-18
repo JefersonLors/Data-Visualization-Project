@@ -136,9 +136,8 @@ export const FooterText = styled.p`
 
 export const TitleQuestion = styled.h6`
   margin: 0px;
-  font-family:
-    'Lucida' Grande,
-    sans-serif;
+  font-family: "Gill Sans", sans-serif;
   text-align: center;
   font-size: 30px;
+  color: #4a4a4a;
 `;

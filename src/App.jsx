@@ -49,8 +49,11 @@ function App() {
   const [cnaesFrequentes, setCnaesFrequentes] = useState([]);
   const [estadosICMS, setEstadosICMS] = useState([]);
   const [municipiosICMS, setMunicipiosICMS] = useState([]);
-  const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] =
-    useState([]);
+  const [topMunicipiosVendasECompras, setTopMunicipiosVendasECompras] = useState([]);
+  const [icmsTotal, setIcmsTotal] = useState([]);
+  const [brutoTotal, setBrutoTotal] = useState([]);
+  const [qtdMunicipios, setQtdMunicipios] = useState([]);
+  const [qtdEstados, setQtdEstados] = useState([]);
 
   useEffect(() => {
     async function loadCSVFiles(files) {
@@ -377,13 +380,25 @@ function App() {
         );
 
         setTopMunicipiosVendasECompras(municipiosComNomes);
-        console.log(municipiosComNomes);
 
         convertAndSetMunicipios();
         setComprasTotalBruto(totaisBrutosCompras);
         setVendasTotalBruto(totaisBrutosVendas);
         setEstadosICMS(limitedEstados);
         setCnaesFrequentes(cnaesFrequentes);
+
+
+        setIcmsTotal(comprasICMSTotal + vendasICMSTotal);
+        setBrutoTotal(
+          [...totaisBrutosCompras, ...totaisBrutosVendas].reduce((acc, val) => acc + val, 0)
+        );
+        setQtdMunicipios(Object.keys(combinedMunicipios).length);
+        setQtdEstados(Object.keys(combinedEstados).length);
+
+        console.log("Total de ICMS arrecadado:", S + vendasICMSTotal);
+        console.log("Número de estados avaliados:", Object.keys(combinedEstados).length);
+        console.log("Número de municípios avaliados:", Object.keys(combinedMunicipios).length);
+
       } catch (error) {
         console.error('Erro ao carregar os arquivos CSV:', error);
       }
@@ -392,6 +407,13 @@ function App() {
     loadData();
   }, []);
 
+  function formatNumber(value) {
+    if (value >= 1_000_000_000) return (value / 1_000_000_000).toFixed(1) + "B";
+    if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + "M";
+    if (value >= 1_000) return (value / 1_000).toFixed(1) + "K";
+    return value.toString();
+  }
+
   return (
     <DashboardContainer>
       <MainContent>
@@ -399,10 +421,10 @@ function App() {
           <Title>Relatório de Notas Fiscais 2019.1</Title>
         </Header>
         <CardContainer>
-          <Card bgColor="#7593af">150 Orders</Card>
-          <Card bgColor="#7593af">53% Bounce Rate</Card>
-          <Card bgColor="#7593af">44 User Registrations</Card>
-          <Card bgColor="#7593af">65 Unique Visitors</Card>
+        <Card bgColor="#7593af">ICMS arrecadado: {formatNumber(icmsTotal)}</Card>
+        <Card bgColor="#7593af">Total bruto: {formatNumber(brutoTotal)}</Card>
+        <Card bgColor="#7593af">Municípios avaliados: {formatNumber(qtdMunicipios)}</Card>
+        <Card bgColor="#7593af">Estados avaliados: {formatNumber(qtdEstados)}</Card>
         </CardContainer>
         <ChartCardContainer>
           <ChartCardVerticalBarPlot gridRow="1 / 1" gridColumn="1 / 2">
